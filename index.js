@@ -1,20 +1,11 @@
-var http = require('http');
+function process(request, response, opts, errorCallback) {
+    var opts = opts || {};
+    if (!opts.targetHost) throw new TypeError('need target host');
+    opts.targetPort = opts.targetPort || 80;
 
-var server = http.createServer();
-var config = {
-    targetHost: '115.29.233.12',
-    targetPort: 80
-};
-
-server.listen(3000);
-server.on('listening', function() {
-    console.log('the server is listening on port 3000!');
-});
-server.on('request', function(request, response) {
-    // 转发请求
     var options = {
-        hostname: config.targetHost,
-        port: config.targetPort,
+        hostname: opts.targetHost,
+        port: opts.targetPort,
         path: request.url,
         method: request.method,
         headers: request.headers
@@ -23,19 +14,13 @@ server.on('request', function(request, response) {
     var req = http.request(options, function(res) {
         response.writeHead(res.statusCode, res.headers);
         res.on('data', function (chunk) {
-            console.log(chunk);
             response.write(chunk);
             response.end();
         });
     });
 
-    console.log('----------method:', request.method);
-    console.log('----------headers:', request.headers);
-    console.log('----------url:', request.url);
-
     if (request.method === 'POST') {
         request.on('data', function(data) {
-            console.log(data);
             req.write(data);
             req.end();
         });
@@ -44,9 +29,11 @@ server.on('request', function(request, response) {
     }
 
     req.on('error', function(e) {
-      console.log('problem with request: ' + e.message);
+        errorCallback instanceof Function && errorCallback(e);
     });
-});
+}
+
+module.exports = process;
 
 
 
