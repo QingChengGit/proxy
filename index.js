@@ -1,3 +1,4 @@
+var http = require('http');
 function process(request, response, opts, errorCallback) {
     var opts = opts || {};
     if (!opts.targetHost) throw new TypeError('need target host');
