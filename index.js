@@ -16,6 +16,8 @@ function process(request, response, opts, errorCallback) {
         response.writeHead(res.statusCode, res.headers);
         res.on('data', function (chunk) {
             response.write(chunk);
+        });
+        res.on('end', function() {
             response.end();
         });
     });
