@@ -20,16 +20,19 @@ function process(request, response, opts, errorCallback) {
         headers: request.headers
     };
 
+    // 伪装头部
     options.headers['host'] = opts.targetHost + ':' + opts.targetPort
     options.headers['Remote Address'] = opts.targetHost + ':' + opts.targetPort;
     options.headers['Request URL'] = opts.targetHost + ':' + opts.targetPort + request.url;
 
     var req = (opts.kind === 'https' ? https.request : http.request)(options, function(res) {
+        // 处理重定向问题
         if (res.headers.location) {
             var parseObject = url.parse(res.headers.location);
             res.headers.location = parseObject.path;
         }
         response.writeHead(res.statusCode, res.headers);
+
         res.on('data', function (chunk) {
             response.write(chunk);
         });
