@@ -1,11 +1,10 @@
 var http = require('http');
-var process = require('./index.js');
+var process = require('../index.js').process;
 
 var server = http.createServer();
 var config = {
-    targetHost: '172.30.3.195',
-    targetPort: 80,
-    hostname: 'tsgw.shgt.com'
+    targetHost: 'www.weibo.com',
+    targetPort: 80
 };
 
 server.listen(3000);
