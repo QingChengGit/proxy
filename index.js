@@ -56,35 +56,8 @@ function process(request, response, opts, errorCallback) {
     });
 }
 
-
-var net = require('net');
-function processSocket(socketClient, opts, errorCallback) {
-    net.connect({
-        host: opts.targetHost,
-        port: opts.targetPort,
-        localAddress: socketClient.localAddress,
-        localPort: socketClient.localPort,
-        family: 4
-    }, function(socket) {
-        socketClient.on('data', function(data) {
-            socket.write(data);
-        });
-        socketClient.on('end', function() {
-            socket.end();
-        });
-
-        socket.on('data', function(data) {
-            socketClient.write(data);
-        });
-        socket.on('end', function() {
-            socketClient.end();
-        });
-    });
-}
-
 module.exports = {
-    process: process,
-    processSocket: processSocket
+    process: process
 };
 
 
